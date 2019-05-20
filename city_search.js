@@ -1,5 +1,6 @@
-
 const data = require('./data/AllData.json');
+const {cityReliability,areaReliability,cityStatus,areaStatus, fullwidthNumber} = require('./config.js');
+
 
 class CitySearch {
 
@@ -7,6 +8,7 @@ class CitySearch {
 
         if (!CitySearch.instance) {
             this.citys = {};
+
             CitySearch.instance = this;
             this.arrange();
         }
@@ -16,6 +18,13 @@ class CitySearch {
     }
 
     arrange() {
+        this.handleJsonData();
+        this.supplementCity();
+        this.supplementNumberInRoad();
+    }
+
+    //let Row Data(Array) arrange into key value pair(Object)
+    handleJsonData(){
         for (let i in data) {
             let cityData = data[i];
             let city = {};
@@ -50,43 +59,83 @@ class CitySearch {
         }
     }
 
-    transfer(address) {
-        return this.analyze(address);
+    //map "臺" and "台" into same solution in city name
+    supplementCity(){
+        for(let city in this.citys){
+            if(city.includes("臺")){
+                let newCity = city.replace("臺", "台");
+                this.citys[newCity] = this.citys[city];
+            }
+        }
     }
 
+    supplementNumberInRoad(){
+        for(let city in this.citys){
+            for(let area in this.citys[city].areas){
+                for(let road in this.citys[city].areas[area].roads){
+                    for(let number in fullwidthNumber){
+                        if(road.includes(number)){
+                            let newRoad1 = road.replace(number,fullwidthNumber[number].number);
+                            let newRoad2 = road.replace(number,fullwidthNumber[number].chinese);
+
+                            this.citys[city].areas[area].roads[newRoad1] = this.citys[city].areas[area].roads[road];
+                            this.citys[city].areas[area].roads[newRoad2] = this.citys[city].areas[area].roads[road];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+
+    transfer(address) {
+        let result = this.analyze(address);
+        this.calculateReliability(result);
+        return result;
+    }
+
+    //Try to analyze address to map data
     analyze(address) {
-        let result = {};
+        let result = {
+            city: {},
+            area: {},
+            address
+        };
+
         let foundCity;
-        let status = 0;
+        let isFoundCity = false;
 
         for (let city in this.citys) {
             if (address.includes(city)) {
-                result.city = city;
+                result.city.name = this.citys[city].cityName;
+                result.city.status = cityStatus.mapByCity;
+
                 foundCity = this.citys[city];
-                status = 100;
+                isFoundCity = true;
                 break;
             }
         }
 
-        if (status === 100) {
+        if (isFoundCity) {
             for (let area in foundCity.areas) {
                 if (address.includes(area)) {
-                    result.area = area;
-                    result.status = 200;
-                    
+                    result.area.name = area;
+                    result.area.status = areaStatus.mapByArea;
+
                     return result;
                 }
             }
         }
 
         //recursive all the road and choose first one
-        if (status === 100) {
+        if (isFoundCity) {
             for (let area in foundCity.areas) {
 
                 for (let road in foundCity.areas[area].roads) {
                     if (address.includes(road)) {
-                        result.area = area;
-                        result.status = 300;
+                        result.area.name = area;
+                        result.area.status = areaStatus.mapByRoadAndCity;
                         
                         return result;
                     }
@@ -94,21 +143,24 @@ class CitySearch {
             }
         }
 
-        if (status === 100) {
-            result.area = "not found";
-            result.status = 400;
+        if (isFoundCity) {
+            result.area.name = "not found";
+            result.area.status = areaStatus.notFound;
             
             return result;
         }
 
         //mean city is not found
-        if (status === 0) {
+        if (!isFoundCity) {
             for (let city in this.citys) {
                 for (let area in this.citys[city].areas) {
                     if (address.includes(area)) {
-                        result.city = city;
-                        result.area = area;
-                        result.status = 500;
+
+                        result.city.name = city;
+                        result.city.status = cityStatus.mapByArea;
+
+                        result.area.name = area;
+                        result.area.status = areaStatus.mapByArea;
 
                         return result;
                     }
@@ -116,15 +168,17 @@ class CitySearch {
             }
         }
 
-        if (status === 0) {
+        if (!isFoundCity) {
             for (let city in this.citys) {
                 for (let area in this.citys[city].areas) {
                     for (let road in this.citys[city].areas[area].roads){
-
                         if (address.includes(road)) {
-                            result.city = city;
-                            result.area = area;
-                            result.status = 600;
+
+                            result.city.name = city;
+                            result.city.status = cityStatus.mapByRoad;
+
+                            result.area.name = area;
+                            result.area.status = areaStatus.mapByRoadWithoutCity;
 
                             return result;
                         }
@@ -133,17 +187,28 @@ class CitySearch {
             }
         }
 
-        if(status === 0){
-            result.city = "not found";
-            result.area = "not found";
-            result.status = 0;
+        if(!isFoundCity){
+            result.city.name = "not found";
+            result.city.status = cityStatus.notFound;
+
+            result.area.name = "not found";
+            result.area.status = areaStatus.notFound;
 
             return result;
         }
     }
 
+    calculateReliability(result){
+        let city = result.city;
+        city.reliability = cityReliability[city.status];
 
+        let area = result.area;
+        area.reliability = areaReliability[area.status];
+
+        result.reliability = (city.reliability + area.reliability) * 0.5
+    }
 }
+
 const instance = new CitySearch();
 
 module.exports = instance;
