@@ -29,8 +29,8 @@ CitySearch.transfer("106臺北市大安區基隆路四段43號");
 
 //result = 
 //{ 
-//    city: { name: '臺北市', status: 'MAP_BY_CITY', reliability: 100 },
-//    area: { name: '大安區', status: 'MAP_BY_AREA', reliability: 100 },
+//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_CITY', reliability: 100 },
+//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_AREA', reliability: 100 },
 //    address: '臺北市大安區基隆路四段43號',
 //    reliability: 100 
 //}
@@ -40,8 +40,8 @@ CitySearch.transfer("大安區基隆路四段43號");
 
 //result = 
 //{
-//    city: { name: '臺北市', status: 'MAP_BY_AREA', reliability: 80 },
-//    area: { name: '大安區', status: 'MAP_BY_AREA', reliability: 100 },
+//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_AREA', reliability: 80 },
+//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_AREA', reliability: 100 },
 //    address: '大安區基隆路四段43號',
 //    reliability: 90
 //}
@@ -50,8 +50,8 @@ CitySearch.transfer("基隆路四段43號");
 
 //result =
 //{ 
-//    city: { name: '臺北市', status: 'MAP_BY_ROAD', reliability: 15 },
-//    area: { name: '大安區', status: 'MAP_BY_ROAD_WITHOUT_CITY',reliability: 15 },
+//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_ROAD', reliability: 15 },
+//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_ROAD_WITHOUT_CITY',reliability: 15 },
 //    address: '106基隆路四段43號',
 //    reliability: 15 
 //}
