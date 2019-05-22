@@ -109,6 +109,7 @@ class CitySearch {
         for (let city in this.citys) {
             if (address.includes(city)) {
                 result.city.name = this.citys[city].cityName;
+                result.city.engName = this.citys[city].cityEngName;
                 result.city.status = cityStatus.mapByCity;
 
                 foundCity = this.citys[city];
@@ -121,6 +122,7 @@ class CitySearch {
             for (let area in foundCity.areas) {
                 if (address.includes(area)) {
                     result.area.name = area;
+                    result.area.engName = foundCity.areas[area].areaEngName;
                     result.area.status = areaStatus.mapByArea;
 
                     return result;
@@ -135,6 +137,7 @@ class CitySearch {
                 for (let road in foundCity.areas[area].roads) {
                     if (address.includes(road)) {
                         result.area.name = area;
+                        result.area.engName = foundCity.areas[area].areaEngName;
                         result.area.status = areaStatus.mapByRoadAndCity;
                         
                         return result;
@@ -145,6 +148,7 @@ class CitySearch {
 
         if (isFoundCity) {
             result.area.name = "not found";
+            result.area.engName = "not found";
             result.area.status = areaStatus.notFound;
             
             return result;
@@ -157,9 +161,11 @@ class CitySearch {
                     if (address.includes(area)) {
 
                         result.city.name = city;
+                        result.city.engName = this.citys[city].cityEngName;
                         result.city.status = cityStatus.mapByArea;
 
                         result.area.name = area;
+                        result.area.engName = this.citys[city].areas[area].areaEngName;
                         result.area.status = areaStatus.mapByArea;
 
                         return result;
@@ -175,9 +181,11 @@ class CitySearch {
                         if (address.includes(road)) {
 
                             result.city.name = city;
+                            result.city.engName = this.citys[city].cityEngName;
                             result.city.status = cityStatus.mapByRoad;
 
                             result.area.name = area;
+                            result.area.engName = this.citys[city].areas[area].areaEngName;
                             result.area.status = areaStatus.mapByRoadWithoutCity;
 
                             return result;
@@ -189,9 +197,11 @@ class CitySearch {
 
         if(!isFoundCity){
             result.city.name = "not found";
+            result.city.engName = "not found";
             result.city.status = cityStatus.notFound;
 
             result.area.name = "not found";
+            result.area.engName = "not found";
             result.area.status = areaStatus.notFound;
 
             return result;
