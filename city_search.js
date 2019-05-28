@@ -1,5 +1,4 @@
 const data = require('./data/AllData.json');
-const process = require('process');
 const { cityReliability, areaReliability, cityStatus, areaStatus, fullwidthNumber } = require('./config.js');
 
 
