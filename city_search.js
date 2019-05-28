@@ -1,5 +1,6 @@
 const data = require('./data/AllData.json');
-const {cityReliability,areaReliability,cityStatus,areaStatus, fullwidthNumber} = require('./config.js');
+const process = require('process');
+const { cityReliability, areaReliability, cityStatus, areaStatus, fullwidthNumber } = require('./config.js');
 
 
 class CitySearch {
@@ -24,7 +25,7 @@ class CitySearch {
     }
 
     //let Row Data(Array) arrange into key value pair(Object)
-    handleJsonData(){
+    handleJsonData() {
         for (let i in data) {
             let cityData = data[i];
             let city = {};
@@ -34,6 +35,7 @@ class CitySearch {
             city.areas = {};
 
             this.citys[cityData.CityName] = city;
+            this.citys[cityData.CityEngName] = city;
 
             for (let j in cityData.AreaList) {
                 let areaData = cityData.AreaList[j];
@@ -60,23 +62,24 @@ class CitySearch {
     }
 
     //map "臺" and "台" into same solution in city name
-    supplementCity(){
-        for(let city in this.citys){
-            if(city.includes("臺")){
+    //add English to key
+    supplementCity() {
+        for (let city in this.citys) {
+            if (city.includes("臺")) {
                 let newCity = city.replace("臺", "台");
                 this.citys[newCity] = this.citys[city];
             }
         }
     }
 
-    supplementNumberInRoad(){
-        for(let city in this.citys){
-            for(let area in this.citys[city].areas){
-                for(let road in this.citys[city].areas[area].roads){
-                    for(let number in fullwidthNumber){
-                        if(road.includes(number)){
-                            let newRoad1 = road.replace(number,fullwidthNumber[number].number);
-                            let newRoad2 = road.replace(number,fullwidthNumber[number].chinese);
+    supplementNumberInRoad() {
+        for (let city in this.citys) {
+            for (let area in this.citys[city].areas) {
+                for (let road in this.citys[city].areas[area].roads) {
+                    for (let number in fullwidthNumber) {
+                        if (road.includes(number)) {
+                            let newRoad1 = road.replace(number, fullwidthNumber[number].number);
+                            let newRoad2 = road.replace(number, fullwidthNumber[number].chinese);
 
                             this.citys[city].areas[area].roads[newRoad1] = this.citys[city].areas[area].roads[road];
                             this.citys[city].areas[area].roads[newRoad2] = this.citys[city].areas[area].roads[road];
@@ -87,7 +90,7 @@ class CitySearch {
         }
     }
 
-    
+
 
     transfer(address) {
         let result = this.analyze(address);
@@ -139,7 +142,7 @@ class CitySearch {
                         result.area.name = area;
                         result.area.engName = foundCity.areas[area].areaEngName;
                         result.area.status = areaStatus.mapByRoadAndCity;
-                        
+
                         return result;
                     }
                 }
@@ -150,7 +153,7 @@ class CitySearch {
             result.area.name = "not found";
             result.area.engName = "not found";
             result.area.status = areaStatus.notFound;
-            
+
             return result;
         }
 
@@ -177,7 +180,7 @@ class CitySearch {
         if (!isFoundCity) {
             for (let city in this.citys) {
                 for (let area in this.citys[city].areas) {
-                    for (let road in this.citys[city].areas[area].roads){
+                    for (let road in this.citys[city].areas[area].roads) {
                         if (address.includes(road)) {
 
                             result.city.name = city;
@@ -195,7 +198,7 @@ class CitySearch {
             }
         }
 
-        if(!isFoundCity){
+        if (!isFoundCity) {
             result.city.name = "not found";
             result.city.engName = "not found";
             result.city.status = cityStatus.notFound;
@@ -208,7 +211,7 @@ class CitySearch {
         }
     }
 
-    calculateReliability(result){
+    calculateReliability(result) {
         let city = result.city;
         city.reliability = cityReliability[city.status];
 
@@ -216,6 +219,25 @@ class CitySearch {
         area.reliability = areaReliability[area.status];
 
         result.reliability = (city.reliability + area.reliability) * 0.5
+    }
+
+    getAreasFromCity(city, language = "zh_TW") {
+        let result = [];
+        if (this.citys.hasOwnProperty(city)) {
+
+            if (language === "zh_TW") {
+                for (let area in this.citys[city].areas) {
+                    result.push(this.citys[city].areas[area].areaName);
+                }
+            }
+            else if (language === "en_US") {
+                for (let area in this.citys[city].areas) {
+                    result.push(this.citys[city].areas[area].areaEngName);
+                }
+            }
+
+        }
+        return result;
     }
 }
 
