@@ -3,6 +3,7 @@ const CitySearch = require('../city_search');
 var result = CitySearch.transfer("106基隆路四段43號");
 console.log(result);
 
+console.log(CitySearch.transfer('No.10, Sec. 5, Zhongxiao E. Rd., Xinyi Dist,Taipei City'))
 
 const addresses = [
     "員水路一段416號",
@@ -35,3 +36,5 @@ for(let ad in addresses){
     console.log(CitySearch.transfer(addresses[ad]));
 }
 
+
+console.log(CitySearch.transfer('No.10, Sec. 5, Zhongxiao E. Rd., Xinyi Dist,Taipei City'))

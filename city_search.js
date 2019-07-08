@@ -46,6 +46,7 @@ class CitySearch {
                 area.roads = {};
 
                 city.areas[areaData.AreaName] = area;
+                city.areas[areaData.AreaEngName.replace('.','')] = area;
 
                 for (let k in areaData.RoadList) {
                     let roadData = areaData.RoadList[k];
@@ -55,6 +56,7 @@ class CitySearch {
                     road.roadEngName = roadData.RoadEngName;
 
                     area.roads[roadData.RoadName] = road;
+                    area.roads[roadData.RoadEngName.replace('.','')] = road;
                 }
             }
         }
