@@ -1,6 +1,6 @@
 {
   "name": "citysearchtw",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "This project for analysis of the address and transfer it into City and  Administration Area.",
   "main": "city_search.js",
   "directories": {

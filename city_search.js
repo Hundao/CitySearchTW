@@ -93,14 +93,14 @@ class CitySearch {
 
 
 
-    transfer(address) {
-        let result = this.analyze(address);
+    transfer(address, locale = "zh-TW") {
+        let result = this.analyze(address, locale);
         this.calculateReliability(result);
         return result;
     }
 
     //Try to analyze address to map data
-    analyze(address) {
+    analyze(address, locale) {
         let result = {
             city: {},
             area: {},
@@ -112,8 +112,14 @@ class CitySearch {
 
         for (let city in this.citys) {
             if (address.includes(city)) {
-                result.city.name = this.citys[city].cityName;
-                result.city.engName = this.citys[city].cityEngName;
+                
+                if(locale === 'zh-TW'){
+                    result.city.name = this.citys[city].cityName;
+                }
+                else{
+                    result.city.name = this.citys[city].cityEngName;
+                }
+
                 result.city.status = cityStatus.mapByCity;
 
                 foundCity = this.citys[city];
@@ -125,8 +131,11 @@ class CitySearch {
         if (isFoundCity) {
             for (let area in foundCity.areas) {
                 if (address.includes(area)) {
-                    result.area.name = area;
-                    result.area.engName = foundCity.areas[area].areaEngName;
+                    if(locale === 'zh-TW'){
+                        result.area.name = foundCity.areas[area].areaName;
+                    }else{
+                        result.area.name = foundCity.areas[area].areaEngName;
+                    }
                     result.area.status = areaStatus.mapByArea;
 
                     return result;
@@ -140,8 +149,12 @@ class CitySearch {
 
                 for (let road in foundCity.areas[area].roads) {
                     if (address.includes(road)) {
-                        result.area.name = area;
-                        result.area.engName = foundCity.areas[area].areaEngName;
+                        if(locale === 'zh-TW'){
+                            result.area.name = foundCity.areas[area].areaName;
+                        }
+                        else{
+                            result.area.name = foundCity.areas[area].areaEngName;
+                        }
                         result.area.status = areaStatus.mapByRoadAndCity;
 
                         return result;
@@ -152,7 +165,6 @@ class CitySearch {
 
         if (isFoundCity) {
             result.area.name = "not found";
-            result.area.engName = "not found";
             result.area.status = areaStatus.notFound;
 
             return result;
@@ -164,12 +176,16 @@ class CitySearch {
                 for (let area in this.citys[city].areas) {
                     if (address.includes(area)) {
 
-                        result.city.name = city;
-                        result.city.engName = this.citys[city].cityEngName;
-                        result.city.status = cityStatus.mapByArea;
+                        if(locale === 'zh-TW'){
+                            result.city.name = this.citys[city].cityName;
+                            result.area.name = this.citys[city].areas[area].areaName;
+                        }
+                        else{
+                            result.city.name = this.citys[city].cityEngName;
+                            result.area.name = this.citys[city].areas[area].areaEngName;
+                        }
 
-                        result.area.name = area;
-                        result.area.engName = this.citys[city].areas[area].areaEngName;
+                        result.city.status = cityStatus.mapByArea;
                         result.area.status = areaStatus.mapByArea;
 
                         return result;
@@ -184,12 +200,16 @@ class CitySearch {
                     for (let road in this.citys[city].areas[area].roads) {
                         if (address.includes(road)) {
 
-                            result.city.name = city;
-                            result.city.engName = this.citys[city].cityEngName;
-                            result.city.status = cityStatus.mapByRoad;
+                            if(locale === 'zh-TW'){
+                                result.city.name = this.citys[city].cityName;
+                                result.area.name = this.citys[city].areas[area].areaName;
+                            }
+                            else{
+                                result.city.name = this.citys[city].cityEngName;
+                                result.area.name = this.citys[city].areas[area].areaEngName;
+                            }
 
-                            result.area.name = area;
-                            result.area.engName = this.citys[city].areas[area].areaEngName;
+                            result.city.status = cityStatus.mapByRoad;
                             result.area.status = areaStatus.mapByRoadWithoutCity;
 
                             return result;
@@ -222,16 +242,16 @@ class CitySearch {
         result.reliability = (city.reliability + area.reliability) * 0.5
     }
 
-    getAreasFromCity(city, language = "zh_TW") {
+    getAreasFromCity(city, language = "zh-TW") {
         let result = [];
         if (this.citys.hasOwnProperty(city)) {
 
-            if (language === "zh_TW") {
+            if (language === "zh-TW") {
                 for (let area in this.citys[city].areas) {
                     result.push(this.citys[city].areas[area].areaName);
                 }
             }
-            else if (language === "en_US") {
+            else if (language === "en-US") {
                 for (let area in this.citys[city].areas) {
                     result.push(this.citys[city].areas[area].areaEngName);
                 }
