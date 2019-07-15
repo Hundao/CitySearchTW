@@ -1,7 +1,10 @@
 const CitySearch = require('../city_search');
 
-// var result = CitySearch.transfer("106基隆路四段43號");
-// console.log(result);
+var result = CitySearch.transfer("106臺北市大安區基隆路四段43號");
+console.log(result);
+
+var resultEng = CitySearch.transfer("106臺北市大安區基隆路四段43號", "en-US");
+console.log(resultEng)
 
 const addresses = [
     "員水路一段416號",
@@ -32,10 +35,5 @@ const addresses = [
 
 
 for(let ad in addresses){
-    let rst = CitySearch.transfer(addresses[ad], 'en-US')
-    console.log(rst.city.name, rst.area.name, rst.reliability);
+    console.log(CitySearch.transfer(addresses[ad]))
 }
-
-
-// var result = CitySearch.transfer("No.10, Sec. 5, Zhongxiao E. Rd., Xinyi Dist,Taipei City");
-// console.log(result);

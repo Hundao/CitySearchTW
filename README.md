@@ -11,6 +11,9 @@ This is a service for analyzing cities and administrative areas in Taiwan. It ca
 The results are presumed to include the county, the administrative district, and its reliability and methods of finding.
 ## Install
 
+```
+npm install https://github.com/Hundao/CitySearchTW.git
+```
 
 ## Use
 只要將require "city_search.js"，即可使用其服務。
@@ -29,8 +32,8 @@ CitySearch.transfer("106臺北市大安區基隆路四段43號");
 
 //result = 
 //{ 
-//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_CITY', reliability: 100 },
-//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_AREA', reliability: 100 },
+//    city: { name: '臺北市', status: 'MAP_BY_CITY', reliability: 100 },
+//    area: { name: '大安區', status: 'MAP_BY_AREA', reliability: 100 },
 //    address: '臺北市大安區基隆路四段43號',
 //    reliability: 100 
 //}
@@ -40,8 +43,8 @@ CitySearch.transfer("大安區基隆路四段43號");
 
 //result = 
 //{
-//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_AREA', reliability: 80 },
-//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_AREA', reliability: 100 },
+//    city: { name: '臺北市', status: 'MAP_BY_AREA', reliability: 80 },
+//    area: { name: '大安區', status: 'MAP_BY_AREA', reliability: 100 },
 //    address: '大安區基隆路四段43號',
 //    reliability: 90
 //}
@@ -50,10 +53,20 @@ CitySearch.transfer("基隆路四段43號");
 
 //result =
 //{ 
-//    city: { name: '臺北市', engName: 'Taipei City', status: 'MAP_BY_ROAD', reliability: 15 },
-//    area: { name: '大安區', engName: 'Da’an Dist.', status: 'MAP_BY_ROAD_WITHOUT_CITY',reliability: 15 },
+//    city: { name: '臺北市', status: 'MAP_BY_ROAD', reliability: 15 },
+//    area: { name: '大安區', status: 'MAP_BY_ROAD_WITHOUT_CITY',reliability: 15 },
 //    address: '106基隆路四段43號',
 //    reliability: 15 
+//}
+
+CitySearch.transfer("106臺北市大安區基隆路四段43號", "en-US");
+
+//result = 
+//{ 
+//    city: { name: 'Taipei City', status: 'MAP_BY_CITY', reliability: 100 },
+//    area: { name: 'Da’an Dist', status: 'MAP_BY_AREA', reliability: 100 },
+//    address: '臺北市大安區基隆路四段43號',
+//    reliability: 100 
 //}
 
 ```
@@ -66,17 +79,6 @@ Can read more example in the example.js
 由於地址的解析並不一定是百分之百確定，全台灣有許多重複的路名甚至行政區(最有名的[中永和之歌](https://www.ptt.cc/bbs/MIS_Gbasket/M.1328894407.A.57D.html))，會依照分析的結果給予縣市和行政區可靠度一值，來表示分析結果的相信程度。
 
 Since the resolution of the address is not necessarily 100% certain, there are many duplicate road names and even administrative districts in Taiwan. This method will give the county and city and the administrative district a reliability value according to the analysis results, to indicate the degree of confidence in the analysis result
-
-<!--
-| Status | Mean                                                |
-| ------ | :-------------------------------------------------- |
-| 200    | Find City + Area                                    |
-| 300    | Find City + Area(by road)                           |
-| 400    | Find City but Area not found                        |
-| 500    | By finding the area to figure out the city          |
-| 600    | By finding the road to figure out the city and area |
-| 0      | Not found anything                                  | 
--->
 
 ## Source
 [TaiwanAddressCityAreaRoadChineseEnglishJSON](https://github.com/donma/TaiwanAddressCityAreaRoadChineseEnglishJSON?fbclid=IwAR28FmMJLzD0CYGJsI168nLeQM7gAPBTpuwBZNcpTv7VvWJmhfGHg7uJwew)
